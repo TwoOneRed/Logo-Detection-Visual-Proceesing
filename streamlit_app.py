@@ -79,8 +79,8 @@ option = st.selectbox(
 
 loc = [float(idx) for idx in option.split(', ')]
 
-st.text(loc[0])
-st.text(loc[1])
+st.text("Latitude  = " + loc[0])
+st.text("Longitude = "loc[1])
 
 df = pd.DataFrame(
     {'lat' : [loc[0]] , 'lon': loc[1] } )
