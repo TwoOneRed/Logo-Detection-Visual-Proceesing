@@ -19,3 +19,5 @@ option = st.selectbox(
     (data['point']))
 
 st.text(option)
+
+st.map(option)
