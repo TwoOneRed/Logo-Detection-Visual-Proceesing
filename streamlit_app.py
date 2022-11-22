@@ -20,4 +20,5 @@ option = st.selectbox(
 
 loc = option.split(',')
 
-st.text(loc[0], loc[1])
+st.text(loc[0])
+st.text(loc[1])
