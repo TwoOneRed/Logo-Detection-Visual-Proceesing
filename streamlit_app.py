@@ -6,14 +6,17 @@ import streamlit as st
 
 
 data = pd.read_csv('data.csv')
-data["point"] = str(data["lat"]) + "," + str(data["lon"])
 
+data['lat'] = data['lat'].astype(str)
+data['lon'] = data['lon'].astype(str)
+
+data["point"] = data['lat'] +',' + data['lon']
 
 st.text(data['point'])
 
 option = st.selectbox(
     'Select A Location?',
-    ('Email', 'Home phone', 'Mobile phone'))
+    (data['point']))
 
 
 
