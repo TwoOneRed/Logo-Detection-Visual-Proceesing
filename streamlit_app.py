@@ -6,7 +6,7 @@ import streamlit as st
 
 
 data = pd.read_csv('data.csv')
-data["point"] = data["lat"] + "," + data["lon"]
+data["point"] = str(data["lat"]) + "," + str(data["lon"])
 
 
 st.text(data['point'])
