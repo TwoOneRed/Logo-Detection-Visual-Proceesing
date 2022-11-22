@@ -7,3 +7,5 @@ import streamlit as st
 data = pd.read_csv('data.csv')
 
 st.text(data['SmokerStatus'].unique())
+
+st.map(data)
