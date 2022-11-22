@@ -12,8 +12,6 @@ data['lon'] = data['lon'].astype(str)
 
 data["point"] = data['lat'] +',' + data['lon']
 
-st.text(data['point'])
-
 option = st.selectbox(
     'Select A Location?',
     (data['point']))
@@ -22,3 +20,8 @@ loc = option.split(',')
 
 st.text(loc[0])
 st.text(loc[1])
+
+df = pd.DataFrame(
+    {'lat' : [loc[0]] , 'lon': loc[1] } )
+
+st.map(df)
