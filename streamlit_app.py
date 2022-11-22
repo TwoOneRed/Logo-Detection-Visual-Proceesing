@@ -17,9 +17,3 @@ st.text(data['point'])
 option = st.selectbox(
     'Select A Location?',
     (data['point']))
-
-
-
-st.map(data)
-
-
