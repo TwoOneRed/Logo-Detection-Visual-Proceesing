@@ -10,14 +10,14 @@ data = pd.read_csv('data.csv')
 data['lat'] = data['lat'].astype(str)
 data['lon'] = data['lon'].astype(str)
 
-data["point"] = data['lat'] +',' + data['lon']
+data["point"] = data['lat'] +', ' + data['lon']
 
 option = st.selectbox(
     'Select A Location?',
     (data['point']))
 
 
-loc = [float(idx) for idx in option.split(',')]
+loc = [float(idx) for idx in option.split(', ')]
 
 st.text(loc[0])
 st.text(loc[1])
