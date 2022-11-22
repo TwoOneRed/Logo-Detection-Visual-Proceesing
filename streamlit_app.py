@@ -104,6 +104,6 @@ type_count = collections.Counter(twokmdata['Occupation'])
 
 st.text("Occupation =>")
 for key, value in type_count.items():
-    st.text(key +" => "+ value)
+    st.text(str(key) +" => "+ str(value))
 
                       
