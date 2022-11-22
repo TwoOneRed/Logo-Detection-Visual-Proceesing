@@ -18,6 +18,8 @@ option = st.selectbox(
     'Select A Location?',
     (data['point']))
 
-st.text(option)
+loc = option.split(',')
 
-st.map(option)
+st.text(loc[0], loc[1])
+
+st.map(loc[0], loc[1])
