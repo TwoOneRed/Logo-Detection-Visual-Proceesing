@@ -59,8 +59,8 @@ shops = location1 + location2 + location3
 shops_count = collections.Counter(shops)
 shops_count_sorted = sorted(shops_count.items(), key=lambda x:x[1], reverse=True)
 
-st.text("Top 1 = ", shops_count_sorted[0][0])
-st.text("Top 2 = ", shops_count_sorted[1][0])
-st.text("Top 3 = ", shops_count_sorted[2][0])
-st.text("Top 4 = ", shops_count_sorted[3][0])
-st.text("Top 5 = ", shops_count_sorted[4][0])
+st.text("Top 1 = " + shops_count_sorted[0][0])
+st.text("Top 2 = " + shops_count_sorted[1][0])
+st.text("Top 3 = " + shops_count_sorted[2][0])
+st.text("Top 4 = " + shops_count_sorted[3][0])
+st.text("Top 5 = " + shops_count_sorted[4][0])
