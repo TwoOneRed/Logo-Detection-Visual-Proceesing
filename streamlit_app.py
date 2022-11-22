@@ -84,7 +84,7 @@ distances_km = []
 
 for row in data.itertuples(index=False):
     distances_km.append(
-       haversine_distance(float(loc[0]), float(loc[1]), row.lat, row.lon)
+       haversine_distance(float(loc[0]), float(loc[1]), float(row.lat), float(row.lon))
    )
     
 data['distance'] = distances_km
