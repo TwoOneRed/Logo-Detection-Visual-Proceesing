@@ -3,6 +3,7 @@ import altair as alt
 import math
 import pandas as pd
 import streamlit as st
+import collections
 
 #SELECT POINT FROM MAP
 data = pd.read_csv('data.csv')
