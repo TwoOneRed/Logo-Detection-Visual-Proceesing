@@ -101,5 +101,9 @@ twokmdata = data[data['distance'] <= 2]
 st.text("Average " + str(twokmdata['FamilyExpenses_monthly'].mean()))
 
 type_count = collections.Counter(twokmdata['Occupation'])
-st.text("Occupation " + str(type_count))
+
+st.text("Occupation =>")
+for key, value in type_count.items():
+    st.text(key +" => "+ value)
+
                       
