@@ -4,4 +4,6 @@ import math
 import pandas as pd
 import streamlit as st
 
-st.text('Fixed width text')
+data = pd.read_csv('data.csv')
+
+st.text(data['SmokerStatus'].unique())
