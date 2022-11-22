@@ -5,28 +5,7 @@ import pandas as pd
 import streamlit as st
 import collections
 
-#SELECT POINT FROM MAP
-data = pd.read_csv('data.csv')
-
-data['lat'] = data['lat'].astype(str)
-data['lon'] = data['lon'].astype(str)
-
-data["point"] = data['lat'] +', ' + data['lon']
-
-option = st.selectbox(
-    'Select A Location?',
-    (data['point']))
-
-
-loc = [float(idx) for idx in option.split(', ')]
-
-st.text(loc[0])
-st.text(loc[1])
-
-df = pd.DataFrame(
-    {'lat' : [loc[0]] , 'lon': loc[1] } )
-
-st.map(df)
+st.title('TOP 5 RETAILS')
 
 #TOP 5 RETAILS
 mmu = pd.read_csv('MMU.csv')
@@ -64,3 +43,28 @@ st.text("Top 2 = " + shops_count_sorted[1][0] + ' ('+ str(shops_count_sorted[1][
 st.text("Top 3 = " + shops_count_sorted[2][0] + ' ('+ str(shops_count_sorted[2][1]) + ')')
 st.text("Top 4 = " + shops_count_sorted[3][0] + ' ('+ str(shops_count_sorted[3][1]) + ')')
 st.text("Top 5 = " + shops_count_sorted[4][0] + ' ('+ str(shops_count_sorted[4][1]) + ')')
+
+st.title('POINT FROM MAP')
+#SELECT POINT FROM MAP
+data = pd.read_csv('data.csv')
+
+data['lat'] = data['lat'].astype(str)
+data['lon'] = data['lon'].astype(str)
+
+data["point"] = data['lat'] +', ' + data['lon']
+
+option = st.selectbox(
+    'Select A Location?',
+    (data['point']))
+
+
+loc = [float(idx) for idx in option.split(', ')]
+
+st.text(loc[0])
+st.text(loc[1])
+
+df = pd.DataFrame(
+    {'lat' : [loc[0]] , 'lon': loc[1] } )
+
+st.map(df)
+
