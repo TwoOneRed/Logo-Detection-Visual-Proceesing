@@ -6,8 +6,15 @@ import streamlit as st
 
 
 data = pd.read_csv('data.csv')
+data["point"] = data["lat"] + "," + data["lon"]
 
-st.text(data['SmokerStatus'].unique())
+st.write('Longitude Latitude:', data['point'])
+
+option = st.selectbox(
+    'Select A Location?',
+    ('Email', 'Home phone', 'Mobile phone'))
+
+
 
 st.map(data)
 
