@@ -7,13 +7,7 @@ import collections
 import numpy as np
 import math
 
-st.title('TOP 5 RETAILS')
-
-#TOP 5 RETAILS
-mmu = pd.read_csv('MMU.csv')
-komtar = pd.read_csv('Komtar.csv')
-bbotanic =pd.read_csv('BBotanic.csv')
-
+#Clean Data
 def clean(data):
     cleandata = data['name'].values.tolist()
     
@@ -30,6 +24,26 @@ def clean(data):
                 
     return cleandata
 
+#Distance
+def haversine_distance(lat1, lon1, lat2, lon2):
+   r = 6371
+   phi1 = math.radians(lat1)
+   phi2 = math.radians(lat2)
+   delta_phi = math.radians(lat2 - lat1)
+   delta_lambda = math.radians(lon2 - lon1)
+   a = np.sin(delta_phi / 2)**2 + np.cos(phi1) * np.cos(phi2) *   np.sin(delta_lambda / 2)**2
+   res = r * (2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a)))
+   return np.round(res, 2)
+
+
+######################################################################
+#TOP 5 RETAILS
+######################################################################
+st.title('TOP 5 RETAILS')
+
+mmu = pd.read_csv('MMU.csv')
+komtar = pd.read_csv('Komtar.csv')
+bbotanic =pd.read_csv('BBotanic.csv')
 
 location1 = clean(mmu)
 location2 = clean(komtar)
@@ -46,8 +60,10 @@ st.text("Top 3 = " + shops_count_sorted[2][0] + ' ('+ str(shops_count_sorted[2][
 st.text("Top 4 = " + shops_count_sorted[3][0] + ' ('+ str(shops_count_sorted[3][1]) + ')')
 st.text("Top 5 = " + shops_count_sorted[4][0] + ' ('+ str(shops_count_sorted[4][1]) + ')')
 
-st.title('POINT FROM MAP')
+######################################################################
 #SELECT POINT FROM MAP
+######################################################################
+st.title('POINT FROM MAP')
 data = pd.read_csv('data.csv')
 
 data['lat'] = data['lat'].astype(str)
@@ -70,23 +86,17 @@ df = pd.DataFrame(
 
 st.map(df)
 
-def haversine_distance(lat1, lon1, lat2, lon2):
-   r = 6371
-   phi1 = math.radians(lat1)
-   phi2 = math.radians(lat2)
-   delta_phi = math.radians(lat2 - lat1)
-   delta_lambda = math.radians(lon2 - lon1)
-   a = np.sin(delta_phi / 2)**2 + np.cos(phi1) * np.cos(phi2) *   np.sin(delta_lambda / 2)**2
-   res = r * (2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a)))
-   return np.round(res, 2)
-
+######################################################################
+#COUNT DISTANCE
+######################################################################
 distances_km = []
-
 for row in data.itertuples(index=False):
-    distances_km.append(
-       haversine_distance(float(loc[0]), float(loc[1]), float(row.lat), float(row.lon))
-   )
+    distances_km.append(haversine_distance(float(loc[0]), float(loc[1]), float(row.lat), float(row.lon)))
     
 data['distance'] = distances_km
 
-st.text(data['distance'])
+twokmdata = data[data['distance] <= 2]
+
+st.text("Average " + twokmdata['FamilyExpenses_monthly'].mean())
+st.text("Occupation " + twokmdata['Occupation'].unique())
+                      
