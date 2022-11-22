@@ -16,7 +16,8 @@ option = st.selectbox(
     'Select A Location?',
     (data['point']))
 
-loc = option.split(',')
+
+loc = [float(idx) for idx in option.split(',')]
 
 st.text(loc[0])
 st.text(loc[1])
