@@ -89,4 +89,4 @@ for row in data.itertuples(index=False):
     
 data['distance'] = distances_km
 
-st.text(data['distance')
+st.text(data['distance'])
