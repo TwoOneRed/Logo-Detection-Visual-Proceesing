@@ -95,7 +95,7 @@ for row in data.itertuples(index=False):
     
 data['distance'] = distances_km
 
-twokmdata = data[data['distance] <= 2]
+twokmdata = data[data['distance] <= 2]]
 
 st.text("Average " + twokmdata['FamilyExpenses_monthly'].mean())
 st.text("Occupation " + twokmdata['Occupation'].unique())
