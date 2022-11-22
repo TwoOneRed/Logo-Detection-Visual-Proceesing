@@ -98,11 +98,12 @@ data['distance'] = distances_km
 
 twokmdata = data[data['distance'] <= 2]
 
+st.title('FAMILY EXPENSES IN 2KM')
 st.text("Average " + str(twokmdata['FamilyExpenses_monthly'].mean()))
 
 type_count = collections.Counter(twokmdata['Occupation'])
 
-st.text("Occupation =>")
+st.title('OCCUPATION COUNT IN 2KM')
 for key, value in type_count.items():
     st.text(str(key) +" => "+ str(value))
 
