@@ -6,6 +6,7 @@ import streamlit as st
 import collections
 import numpy as np
 import math
+import collections
 
 #Clean Data
 def clean(data):
@@ -96,9 +97,9 @@ for row in data.itertuples(index=False):
 data['distance'] = distances_km
 
 twokmdata = data[data['distance'] <= 2]
-st.text(twokmdata['FamilyExpenses_monthly'])
-st.text(twokmdata['distance'])
 
 st.text("Average " + str(twokmdata['FamilyExpenses_monthly'].mean()))
-st.text("Occupation " + twokmdata['Occupation'].unique())
+
+type_count = collections.Counter(twokmdata['Occupation'])
+st.text("Occupation " + type_count)
                       
