@@ -4,6 +4,7 @@ import math
 import pandas as pd
 import streamlit as st
 import collections
+import haversine as hs
 
 st.title('TOP 5 RETAILS')
 
@@ -68,3 +69,10 @@ df = pd.DataFrame(
 
 st.map(df)
 
+data['distance'] = distance(loc, data)
+
+def distance(target, data):
+    dist = hs.haversine((loc[0],loc[1]),(data['lat'],data['loc']))
+    return data
+
+print(data['distance'])
