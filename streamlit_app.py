@@ -1,3 +1,4 @@
+#IMPORT LIBRARY
 from collections import namedtuple
 import altair as alt
 import math
@@ -8,7 +9,7 @@ import numpy as np
 import math
 import collections
 
-#Clean Data
+#CLEAN DATA FOR TOP 5 RETAILS
 def clean(data):
     cleandata = data['name'].values.tolist()
     
@@ -25,7 +26,7 @@ def clean(data):
                 
     return cleandata
 
-#Distance
+#DISTANCE FUNCTION FOR COUNTING ALL LOCATION FROM A LOCATION
 def haversine_distance(lat1, lon1, lat2, lon2):
    r = 6371
    phi1 = math.radians(lat1)
@@ -67,40 +68,50 @@ st.text("Top 5 = " + shops_count_sorted[4][0] + ' ('+ str(shops_count_sorted[4][
 st.title('POINT FROM MAP')
 data = pd.read_csv('data.csv')
 
+#CHANGE DATA TO STRING
 data['lat'] = data['lat'].astype(str)
 data['lon'] = data['lon'].astype(str)
 
+#COMBINE LOCATION TOGETHER FOR CHOSING OPTION
 data["point"] = data['lat'] +', ' + data['lon']
 
+#SELECT BOX FOR LOCATION
 option = st.selectbox(
     'Select A Location?',
     (data['point']))
 
-
+#CHANGE BACK SELECTED OPTION BACK TO LIST
 loc = [float(idx) for idx in option.split(', ')]
 
+#PRINT OUT LAT, LON
 st.text("Latitude  = " + str(loc[0]))
 st.text("Longitude = " + str(loc[1]))
 
+#DATAFRAME FOR PRINT OUT MAP
 df = pd.DataFrame(
     {'lat' : [loc[0]] , 'lon': loc[1] } )
 
+#MAP
 st.map(df)
 
 ######################################################################
 #COUNT DISTANCE
 ######################################################################
+#COUNT DISTANCE FOR EACH LOCATION
 distances_km = []
 for row in data.itertuples(index=False):
     distances_km.append(haversine_distance(float(loc[0]), float(loc[1]), float(row.lat), float(row.lon)))
     
 data['distance'] = distances_km
 
+#FILTER 2KM LOCATION
 twokmdata = data[data['distance'] <= 2]
 
+#COUNT EXPENSES
 st.title('FAMILY EXPENSES IN 2KM')
 st.text("Average " + str(twokmdata['FamilyExpenses_monthly'].mean()))
 
+#COUNT OCCUPATION
 type_count = collections.Counter(twokmdata['Occupation'])
 
 st.title('OCCUPATION COUNT IN 2KM')
