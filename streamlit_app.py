@@ -74,8 +74,10 @@ if upload_file is not None:
     # Compute the difference image
     difference = normalized_image - blurred
 
+    strength = 2.0
+
     # Add the difference image to the original image
-    sharpened = normalized_image +  difference
+    sharpened = normalized_image + strength * difference
 
     # Show the image
     st.image(sharpened, caption="Sharpened Image", use_column_width=True)
