@@ -54,12 +54,23 @@ if upload_file is not None:
 
     processimage = np.asarray(cropped_image, dtype=np.uint8)
 
-    # Apply histogram equalization
-    gray = cv2.cvtColor(processimage, cv2.COLOR_BGR2GRAY)
-    equalized = cv2.equalizeHist(gray)
+    # Convert the image to the HSV color space
+    hsv_image = cv2.cvtColor(cropped_image, cv2.COLOR_RGB2HSV)
 
-    # Display the images
-    st.image(equalized, caption="Sharpened Image", use_column_width=True)
+    # Split the image into its channels
+    hue, saturation, value = cv2.split(hsv_image)
+
+    # Apply histogram equalization to the value channel
+    equalized_value = cv2.equalizeHist(value)
+
+    # Merge the channels back together
+    hsv_image = cv2.merge((hue, saturation, equalized_value))
+
+    # Convert the image back to the BGR color space
+    equalized_image = cv2.cvtColor(hsv_image, cv2.COLOR_HSV2BGR)
+
+    # Show the image
+    st.image(equalized_image, caption="Histogram Equalized Image", use_column_width=True)
 
     
     # let the user select threshold value
