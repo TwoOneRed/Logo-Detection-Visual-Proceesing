@@ -15,6 +15,5 @@ if upload_file is not None:
    st.success("Image file uploaded")
 
    # Read the file to a dataframe using cv2
-   img = np.fromfile(upload_file, np.uint8)
-   img = cv2.imdecode(img, cv2.IMREAD_GRAYSCALE)
+   img = cv2.imread('upload_file', cv2.IMREAD_GRAYSCALE)
    st.image(img, caption='Uploaded Image', use_column_width=True)                
