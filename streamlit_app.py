@@ -52,8 +52,13 @@ if upload_file is not None:
     else:
         st.image(opencv_image, use_column_width=True)
 
-
     processimage = np.asarray(cropped_image, dtype=np.uint8)
+
+    # Sharpen an image
+    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    processimage = cv2.filter2D(processimage, -1, kernel)
+    st.image(processimage, caption='Processed Image', use_column_width=True)
+
     
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
