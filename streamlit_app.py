@@ -73,7 +73,7 @@ if upload_file is not None:
     # Compute the difference image
     difference = normalized_image - blurred
 
-    strength = 2
+    strength = 1
 
     # Add the difference image to the original image
     sharpened = normalized_image + strength * difference
