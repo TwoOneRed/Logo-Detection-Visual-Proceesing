@@ -45,6 +45,7 @@ if upload_file is not None:
     # Create the cropped image
     cropped_image = crop_image(opencv_image, x1, y1, x2, y2)
 
+    status = False
     # Show the image
     if cropped_image:
         st.image(cropped_image, use_column_width=True)
@@ -52,26 +53,26 @@ if upload_file is not None:
         st.image(opencv_image, use_column_width=True)
 
 
-
     # Create the button
     if st.button('Crop'):
         st.success("Image has been cropped")
-        cropped_image = np.asarray(cropped_image, dtype=np.uint8)
-        # let the user select threshold value
-        threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
+        processimage = np.asarray(cropped_image, dtype=np.uint8)
+    
+    # let the user select threshold value
+    threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
-        # perform gaussianBlur
-        img_blur = cv2.GaussianBlur(cropped_image, (5, 5), 0)
+    # perform gaussianBlur
+    img_blur = cv2.GaussianBlur(processimage, (5, 5), 0)
 
-        # convert colorspace
-        grayImage = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
+    # convert colorspace
+    grayImage = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
 
-        # thresholding
-        ret, thres = cv2.threshold(grayImage, threshold_value, 255, cv2.THRESH_BINARY)
-        st.image(thres, caption='Processed Image', use_column_width=True)
+    # thresholding
+    ret, thres = cv2.threshold(grayImage, threshold_value, 255, cv2.THRESH_BINARY)
+    st.image(thres, caption='Processed Image', use_column_width=True)
 
-        edges = cv2.Canny(thres, 50, 150)
-        st.image(edges, caption='Edged Image', use_column_width=True)
+    edges = cv2.Canny(thres, 50, 150)
+    st.image(edges, caption='Edged Image', use_column_width=True)
 
 
 
