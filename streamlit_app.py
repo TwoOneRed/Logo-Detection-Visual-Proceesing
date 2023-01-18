@@ -54,6 +54,20 @@ if upload_file is not None:
 
     processimage = np.asarray(cropped_image, dtype=np.uint8)
     
+
+    # Compute the mean and standard deviation of the image
+    mean, std = cv2.meanStdDev(processimage)
+
+    # Create a copy of the image
+    normalized_image = processimage.copy()
+
+    # Normalize the image
+    cv2.normalize(processimage, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
+
+    # Show the image
+    st.image(normalized_image, caption="Normalized Image", use_column_width=True)
+
+
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
