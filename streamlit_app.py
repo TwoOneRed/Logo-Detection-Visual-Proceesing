@@ -56,8 +56,7 @@ if upload_file is not None:
     # Create the button
     if st.button('Crop'):
         st.success("Image has been cropped")
-        file_bytes = np.asarray(cropped_image, dtype=np.uint8)
-        cropped_image = cv2.imdecode(file_bytes, 1)
+        cropped_image = np.asarray(cropped_image, dtype=np.uint8)
         # let the user select threshold value
         threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
