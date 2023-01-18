@@ -48,16 +48,16 @@ if upload_file is not None:
     status = False
     # Show the image
     if cropped_image:
-        st.image(cropped_image, use_column_width=True)
+        st.image(cropped_image, caption='Cropped Image', use_column_width=True)
     else:
-        st.image(opencv_image, use_column_width=True)
+        st.image(opencv_image, caption='Cropped Image', use_column_width=True)
 
     processimage = np.asarray(cropped_image, dtype=np.uint8)
 
     # Sharpen an image
     kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
     processimage = cv2.filter2D(processimage, -1, kernel)
-    st.image(processimage, caption='Processed Image', use_column_width=True)
+    st.image(processimage, caption='Sharpen Image', use_column_width=True)
 
     
     # let the user select threshold value
