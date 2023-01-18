@@ -61,9 +61,9 @@ if upload_file is not None:
     difference = processimage - blurred
 
     # Set the strength of the effect
-    strength =  st.slider('Strength of Sharpening', 0.0, 2.0, 1.0)
+    strength =  st.slider('Strength of Sharpening', 0, 2, 1)
 
-# Add the difference image to the original image
+    # Add the difference image to the original image
     sharpened = processimage + strength * difference
 
     # Display the images
