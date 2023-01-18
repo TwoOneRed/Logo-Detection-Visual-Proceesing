@@ -55,7 +55,7 @@ if upload_file is not None:
     processimage = np.asarray(cropped_image, dtype=np.uint8)
 
     # Convert the image to the HSV color space
-    hsv_image = cv2.cvtColor(cropped_image, cv2.COLOR_RGB2HSV)
+    hsv_image = Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2HSV))
 
     # Split the image into its channels
     hue, saturation, value = cv2.split(hsv_image)
@@ -70,6 +70,7 @@ if upload_file is not None:
     equalized_image = cv2.cvtColor(hsv_image, cv2.COLOR_HSV2BGR)
 
     # Show the image
+    equalized_image = np.asarray(equalized_image, dtype=np.uint8)
     st.image(equalized_image, caption="Histogram Equalized Image", use_column_width=True)
 
     
