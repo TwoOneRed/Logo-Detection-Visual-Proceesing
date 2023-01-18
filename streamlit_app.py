@@ -45,7 +45,6 @@ if upload_file is not None:
     # Create the cropped image
     cropped_image = crop_image(opencv_image, x1, y1, x2, y2)
 
-    status = False
     # Show the image
     if cropped_image:
         st.image(cropped_image, caption='Cropped Image', use_column_width=True)
@@ -94,6 +93,14 @@ if upload_file is not None:
     # thresholding
     ret, thres = cv2.threshold(grayImage, threshold_value, 255, cv2.THRESH_BINARY)
     st.image(thres, caption='Processed Image', use_column_width=True)
+
+    # Perform bitwise_and operation between the original image and the thresholded image
+    result = cv2.bitwise_and(cropped_image, cropped_image, mask=thres)
+
+    # Show the image
+    st.image(result, caption="Background removed image", use_column_width=True)
+
+
 
     edges = cv2.Canny(thres, 50, 150)
     st.image(edges, caption='Edged Image', use_column_width=True)
