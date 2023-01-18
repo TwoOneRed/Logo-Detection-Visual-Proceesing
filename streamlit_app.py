@@ -93,6 +93,10 @@ if upload_file is not None:
     # thresholding
     ret, thres = cv2.threshold(grayImage, threshold_value, 255, cv2.THRESH_BINARY)
     st.image(thres, caption='Processed Image', use_column_width=True)
+
+    if st.button("Invert Colors"):
+        thres = cv2.bitwise_not(thres)
+
     cropped_image = np.array(cropped_image)
     # Perform bitwise_and operation between the original image and the thresholded image
     result = cv2.bitwise_and(cropped_image, cropped_image, mask=thres)
