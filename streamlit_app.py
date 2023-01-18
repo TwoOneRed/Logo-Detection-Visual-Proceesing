@@ -32,18 +32,26 @@ if upload_file is not None:
     # Create the sliders for the bottom right point
     x2 = st.slider('Select the X coordinate for the bottom right point', x1, opencv_image.shape[1], opencv_image.shape[1])
     y2 = st.slider('Select the Y coordinate for the bottom right point', y1, opencv_image.shape[0], opencv_image.shape[0])
-        # Create the cropping function
+        
+    # Create the cropping function
     def crop_image(img, x1, y1, x2, y2):
-        # Draw a black rectangle over the portion of the image that will be cropped
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 0), -1)
-        pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        return pil_img.crop((x1, y1, x2, y2))
+        if (x2 - x1) <= 0 or (y2 - y1) <= 0:
+            st.warning("Cannot crop image with width or height of 0.")
+            return None
+        else:
+            pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            return pil_img.crop((x1, y1, x2, y2))
 
     # Create the cropped image
     cropped_image = crop_image(opencv_image, x1, y1, x2, y2)
 
     # Show the image
-    st.image(cropped_image, use_column_width=True)
+    if cropped_image:
+        st.image(cropped_image, use_column_width=True)
+    else:
+        st.image(opencv_image, use_column_width=True)
+
+
 
     # Create the button
     if st.button('Crop'):
