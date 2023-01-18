@@ -26,14 +26,13 @@ if upload_file is not None:
     opencv_image = cv2.imdecode(file_bytes, 1)
 
     # Create the sliders for the top left point
-    x1 = st.slider('Select the X coordinate for the top left point', 0, opencv_image.shape[1])
-    y1 = st.slider('Select the Y coordinate for the top left point', 0, opencv_image.shape[0])
+    x1 = st.slider('Select the X coordinate for the top left point', 0, opencv_image.shape[1], 0)
+    y1 = st.slider('Select the Y coordinate for the top left point', 0, opencv_image.shape[0], 0)
 
     # Create the sliders for the bottom right point
-    x2 = st.slider('Select the X coordinate for the bottom right point', x1, opencv_image.shape[1])
-    y2 = st.slider('Select the Y coordinate for the bottom right point', y1, opencv_image.shape[0])
-
-    # Create the cropping function
+    x2 = st.slider('Select the X coordinate for the bottom right point', x1, opencv_image.shape[1], opencv_image.shape[1])
+    y2 = st.slider('Select the Y coordinate for the bottom right point', y1, opencv_image.shape[0], opencv_image.shape[0])
+        # Create the cropping function
     def crop_image(img, x1, y1, x2, y2):
         # Draw a black rectangle over the portion of the image that will be cropped
         cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 0), -1)
