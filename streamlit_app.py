@@ -72,7 +72,7 @@ if upload_file is not None:
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
     # perform gaussianBlur
-    img_blur = cv2.GaussianBlur(processimage, (5, 5), 0)
+    img_blur = cv2.GaussianBlur(normalized_image, (5, 5), 0)
 
     # convert colorspace
     grayImage = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
