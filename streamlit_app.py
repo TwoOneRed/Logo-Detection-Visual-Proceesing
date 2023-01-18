@@ -54,27 +54,19 @@ if upload_file is not None:
 
     processimage = np.asarray(cropped_image, dtype=np.uint8)
 
-    # Blur the image
-    blurred = cv2.GaussianBlur(processimage, (5, 5), 0)
-
-    # Compute the difference image
-    difference = processimage - blurred
-
-    # Set the strength of the effect
-    strength =  st.slider('Strength of Sharpening', 0, 2, 1)
-
-    # Add the difference image to the original image
-    sharpened = processimage + strength * difference
+    # Apply histogram equalization
+    gray = cv2.cvtColor(processimage, cv2.COLOR_BGR2GRAY)
+    equalized = cv2.equalizeHist(gray)
 
     # Display the images
-    st.image(sharpened, caption="Sharpened Image", use_column_width=True)
+    st.image(equalized, caption="Sharpened Image", use_column_width=True)
 
     
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
     # perform gaussianBlur
-    img_blur = cv2.GaussianBlur(sharpened, (5, 5), 0)
+    img_blur = cv2.GaussianBlur(equalized, (5, 5), 0)
 
     # convert colorspace
     grayImage = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
