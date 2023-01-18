@@ -108,17 +108,6 @@ if upload_file is not None:
     edges = cv2.Canny(thres, 50, 150)
     st.image(edges, caption='Edged Image', use_column_width=True)
 
-    
-
-
-
-
-
-
-
-
-
-
 #    if(st.button("CROP")):
 #        r = cv2.selectROI(edges)
 #        img_cropped = edges[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
