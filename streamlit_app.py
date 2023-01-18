@@ -25,6 +25,32 @@ if upload_file is not None:
     file_bytes = np.asarray(bytearray(upload_file.read()), dtype=np.uint8)
     opencv_image = cv2.imdecode(file_bytes, 1)
 
+    # Create the sliders for the top left point
+    x1 = st.slider('Select the X coordinate for the top left point', 0, opencv_image.width)
+    y1 = st.slider('Select the Y coordinate for the top left point', 0, opencv_image.height)
+
+    # Create the sliders for the bottom right point
+    x2 = st.slider('Select the X coordinate for the bottom right point', x1, opencv_image.width)
+    y2 = st.slider('Select the Y coordinate for the bottom right point', y1, opencv_image.height)
+
+    # Create the cropping function
+    @st.cache
+    def crop_image(img, x1, y1, x2, y2):
+        return img.crop((x1, y1, x2, y2))
+
+    # Create the cropped image
+    cropped_image = crop_image(opencv_image, x1, y1, x2, y2)
+
+    # Show the image
+    st.image(cropped_image, use_column_width=True)
+
+    # Create the button
+    if st.button('Crop'):
+        st.success("Image has been cropped")
+
+
+
+
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
@@ -41,9 +67,18 @@ if upload_file is not None:
     edges = cv2.Canny(thres, 50, 150)
     st.image(edges, caption='Edged Image', use_column_width=True)
 
-    if(st.button("CROP")):
-        r = cv2.selectROI(edges)
-        img_cropped = edges[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        st.image(img_cropped, caption='Edged Image', use_column_width=True)
+
+
+
+
+
+
+
+
+
+#    if(st.button("CROP")):
+#        r = cv2.selectROI(edges)
+#        img_cropped = edges[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+#        cv2.waitKey(0)
+#        cv2.destroyAllWindows()
+#        st.image(img_cropped, caption='Edged Image', use_column_width=True)
