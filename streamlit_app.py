@@ -54,32 +54,32 @@ if upload_file is not None:
     processimage = np.asarray(cropped_image, dtype=np.uint8)
     
 
+    # Compute the mean and standard deviation of the image
+    mean, std = cv2.meanStdDev(processimage)
+
+    # Create a copy of the image
+    normalized_image = processimage.copy()
+
+    # Normalize the image
+    cv2.normalize(processimage, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
+
+    # Show the image
+    st.image(normalized_image, caption="Normalized Image", use_column_width=True)
+
+
     # Blur the image
-    blurred = cv2.GaussianBlur(processimage, (5, 5), 0)
+    blurred = cv2.GaussianBlur(normalized_image, (5, 5), 0)
 
     # Compute the difference image
-    difference = processimage - blurred
+    difference = normalized_image - blurred
 
     strength = 1
 
     # Add the difference image to the original image
-    sharpened = processimage + strength * difference
+    sharpened = normalized_image + strength * difference
 
     # Show the image
     st.image(sharpened, caption="Sharpened Image", use_column_width=True)
-
-
-    # Compute the mean and standard deviation of the image
-    mean, std = cv2.meanStdDev(sharpened)
-
-    # Create a copy of the image
-    normalized_image = sharpened.copy()
-
-    # Normalize the image
-    cv2.normalize(sharpened, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
-
-    # Show the image
-    st.image(normalized_image, caption="Normalized Image", use_column_width=True)
     
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
