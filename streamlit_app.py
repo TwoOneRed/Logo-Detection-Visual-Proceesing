@@ -68,6 +68,21 @@ if upload_file is not None:
     st.image(normalized_image, caption="Normalized Image", use_column_width=True)
 
 
+    # Blur the image
+    blurred = cv2.GaussianBlur(normalized_image, (5, 5), 0)
+
+    # Compute the difference image
+    difference = normalized_image - blurred
+
+    # Set the strength of the effect
+    strength = 2.0
+
+    # Add the difference image to the original image
+    sharpened = normalized_image + strength * difference
+
+    # Show the image
+    st.image(sharpened, caption="Sharpened Image", use_column_width=True)
+    
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
