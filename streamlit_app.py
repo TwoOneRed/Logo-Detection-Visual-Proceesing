@@ -53,7 +53,7 @@ if upload_file is not None:
         st.image(opencv_image, use_column_width=True)
 
 
-    processimage = np.asarray(cropped_image, dtype=np.uint8)s
+    processimage = np.asarray(cropped_image, dtype=np.uint8)
     
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
