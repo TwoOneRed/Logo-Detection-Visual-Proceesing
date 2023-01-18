@@ -54,17 +54,24 @@ if upload_file is not None:
 
     processimage = np.asarray(cropped_image, dtype=np.uint8)
 
-    # Sharpen an image
-    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-    processimage = cv2.filter2D(processimage, -1, kernel)
-    st.image(processimage, caption='Sharpen Image', use_column_width=True)
+    # Blur the image
+    blurred = cv2.GaussianBlur(processimage, (5, 5), 0)
+
+    # Compute the difference image
+    difference = processimage - blurred
+
+    # Add the difference image to the original image
+    sharpened = processimage + difference
+
+    # Display the images
+    st.image(sharpened, caption="Sharpened Image", use_column_width=True)
 
     
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
 
     # perform gaussianBlur
-    img_blur = cv2.GaussianBlur(processimage, (5, 5), 0)
+    img_blur = cv2.GaussianBlur(sharpened, (5, 5), 0)
 
     # convert colorspace
     grayImage = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
