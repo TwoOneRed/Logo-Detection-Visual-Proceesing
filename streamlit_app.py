@@ -83,7 +83,7 @@ if upload_file is not None:
         for index, row in imagedataset.iterrows():
             histogramrow = row['Color_Histogram']
             dist = distance.euclidean(histogramrow, query_Image)
-            query_Image.append((row['filename'], dist))
+            best_matches.append((row['filename'], dist))
 
         best_matches = sorted(best_matches, key=lambda x: x[1])
 
