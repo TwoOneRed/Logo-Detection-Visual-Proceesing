@@ -92,7 +92,8 @@ if upload_file is not None:
 
         st.text(best_matches[0][1])
 
-        st.image(Image.fromarray(np.squeeze(imagedataset[imagedataset['filename'] == best_matches[0][0]]['image'])), caption="Best Image", use_column_width=True)
+        pic = plt.figure(figsize=(6,6))
+        plt.imshow(np.squeeze(imagedataset[imagedataset['filename'] == best_matches[0][0]]['image']))
 
 
 
