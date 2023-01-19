@@ -15,6 +15,8 @@ import collections
 # streamlit run streamlit_app.py
 # path = C:\Users\tansi\Documents\SEM 1\VISUAL INFORMATION PROCESSING\github\VisualProcessing
 
+imagedataset = pd.read_csv('Test_data.csv')
+
 st.title('Logo Retrieval and Recognition System')
 upload_file = st.file_uploader('Please upload an Image file', type=["jpg", "jpeg", "png","jfif"])
 
@@ -74,26 +76,40 @@ if upload_file is not None:
         
             return rgb_hist
         
-        ### TEMP ###
-        import os
-        folder_path = os.getcwd()
-        image_files = [f for f in os.listdir(folder_path) if f.endswith('.png')]
-        ### TEMP ###
-        
-        best_distance = float('inf')
-        best_file = None
         query_Image = histogram(processimage)
-        
-        for file in image_files:
-            dataset_Image = histogram(cv2.imread(file))
-            dist = distance.euclidean(query_Image, dataset_Image)
-            if dist < best_distance:
-                best_distance = dist
-                best_file = file
 
-        st.text(best_distance)   
-        best_image = cv2.imread(best_file)
-        st.image(best_file, caption="Best Image", use_column_width=True)
+        best_matches = []
+
+        for index, row in imagedataset.iterrows():
+            histogramrow = row['Color_Histogram']
+            dist = distance.euclidean(histogramrow, query_Image)
+            query_Image.append((row['filename'], dist))
+
+        best_matches = sorted(best_matches, key=lambda x: x[1])
+
+        st.text(best_matches[1])
+          
+        best_image = cv2.imread(imagedataset[imagedataset['filename'] == best_matches[0]]['filename'])
+        st.image(best_image, caption="Best Image", use_column_width=True)
+
+
+
+        ### TEMP ###
+        #import os
+        #folder_path = os.getcwd()
+        #image_files = [f for f in os.listdir(folder_path) if f.endswith('.png')]
+        ### TEMP ###
+        
+        #best_distance = float('inf')
+        #best_file = None
+        
+        #for file in image_files:
+        #    dataset_Image = histogram(cv2.imread(file))
+        #    dist = distance.euclidean(query_Image, dataset_Image)
+        #    if dist < best_distance:
+        #        best_distance = dist
+        #        best_file = file
+
 
     ########################################################################################################
 
