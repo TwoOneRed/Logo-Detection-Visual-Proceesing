@@ -93,9 +93,9 @@ if upload_file is not None:
 
         st.text(best_matches[0][1])
 
-        curr = np.squeeze(imagedataset[imagedataset['filename'] == best_matches[0][0]]['image'])
-        st.image(curr)
-        
+        curr = imagedataset[imagedataset['filename'] == best_matches[0][0]]['image']
+        st.image(Image.fromarray(curr), caption='Cropped Image', use_column_width=True)
+
 
 
 
