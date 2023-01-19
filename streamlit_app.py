@@ -1,6 +1,9 @@
 #IMPORT LIBRARY
 from collections import namedtuple
-from PIL import Image, ImageDraw
+from PIL import Image
+from skimage.segmentation import slic
+from skimage.color import label2rgb
+from scipy.spatial import distance
 import altair as alt
 import pandas as pd
 import streamlit as st
@@ -25,6 +28,8 @@ if upload_file is not None:
     file_bytes = np.asarray(bytearray(upload_file.read()), dtype=np.uint8)
     opencv_image = cv2.imdecode(file_bytes, 1)
 
+    ###########################################  CROP IMAGE ###########################################
+    
     # Create the sliders for the top left point
     x1 = st.slider('Select the X coordinate for the top left point', 0, opencv_image.shape[1], 0)
     y1 = st.slider('Select the Y coordinate for the top left point', 0, opencv_image.shape[0], 0)
@@ -48,11 +53,49 @@ if upload_file is not None:
     # Show the image
     if cropped_image:
         st.image(cropped_image, caption='Cropped Image', use_column_width=True)
-    else:
-        st.image(opencv_image, caption='Cropped Image', use_column_width=True)
-
-    processimage = np.asarray(cropped_image, dtype=np.uint8)
     
+    processimage = np.asarray(cropped_image, dtype=np.uint8)
+
+    ###########################################  COLOR HISTOGRAM ###########################################
+    
+    if st.button("Search"):
+        def histogram(img, cspace='RGB', binsize=128):
+            colorspace =  {'RGB':cv2.COLOR_BGR2RGB, 'HSV': cv2.COLOR_BGR2HSV, 'YCRCB': cv2.COLOR_BGR2YCrCb, 'XYZ': cv2.COLOR_BGR2XYZ, 'LAB': cv2.COLOR_BGR2LAB}
+            img = cv2.cvtColor(img, colorspace[cspace])
+
+            segments_slic = slic(img, n_segments=300, start_label=1)
+            colorized = label2rgb(segments_slic, image=img, kind='avg')
+            
+            r, g, b = colorized[:,:,0], colorized[:,:,1], colorized[:,:,2]
+            r_hist, r_bin = np.histogram(r, binsize, density=True)
+            g_hist, g_bin = np.histogram(g, binsize, density=True)
+            b_hist, b_bin = np.histogram(b, binsize, density=True)
+            rgb_hist = np.concatenate((r_hist, g_hist, b_hist))
+        
+            return rgb_hist
+        
+        ### TEMP ###
+        import os
+        folder_path = os.getcwd()
+        image_files = [f for f in os.listdir(folder_path) if f.endswith('.png')]
+        ### TEMP ###
+        
+        best_distance = float('inf')
+        best_file = None
+        query_Image = histogram(processimage)
+        
+        for file in image_files:
+            dataset_Image = histogram(cv2.imread(file))
+            dist = distance.euclidean(query_Image, dataset_Image)
+            if dist < best_distance:
+                best_distance = dist
+                best_file = file
+
+        st.text(best_distance)   
+        best_image = cv2.imread(best_file)
+        st.image(best_file, caption="Best Image", use_column_width=True)
+
+    ########################################################################################################
 
     # Compute the mean and standard deviation of the image
     mean, std = cv2.meanStdDev(processimage)
@@ -64,25 +107,23 @@ if upload_file is not None:
     cv2.normalize(processimage, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
 
     # Show the image
-    st.image(normalized_image, caption="Normalized Image", use_column_width=True)
-
+    # st.image(normalized_image, caption="Normalized Image", use_column_width=True)
 
     # Blur the image
     blurred = cv2.GaussianBlur(normalized_image, (5, 5), 0)
 
     # Compute the difference image
     difference = normalized_image - blurred
-
     strength = 1
 
     # Add the difference image to the original image
     sharpened = normalized_image + strength * difference
 
     # Show the image
-    st.image(sharpened, caption="Sharpened Image", use_column_width=True)
+    # st.image(sharpened, caption="Sharpened Image", use_column_width=True)
     
     # let the user select threshold value
-    threshold_value = st.slider("Select Threshold Value", 0, 255, 150)
+    threshold_value = st.slider("Select Threshold Value", 0, 255, 120)
 
     # perform gaussianBlur
     img_blur = cv2.GaussianBlur(sharpened, (5, 5), 0)
@@ -98,12 +139,12 @@ if upload_file is not None:
         thres = cv2.bitwise_not(thres)
 
     cropped_image = np.array(cropped_image)
+
     # Perform bitwise_and operation between the original image and the thresholded image
     result = cv2.bitwise_and(cropped_image, cropped_image, mask=thres)
 
     # Show the image
     st.image(result, caption="Background removed image", use_column_width=True)
-
 
     edges = cv2.Canny(thres, 50, 150)
     st.image(edges, caption='Edged Image', use_column_width=True)
