@@ -15,7 +15,23 @@ import collections
 # streamlit run streamlit_app.py
 # path = C:\Users\tansi\Documents\SEM 1\VISUAL INFORMATION PROCESSING\github\VisualProcessing
 
+def histogram(img, cspace='RGB', binsize=128):
+    colorspace =  {'RGB':cv2.COLOR_BGR2RGB, 'HSV': cv2.COLOR_BGR2HSV, 'YCRCB': cv2.COLOR_BGR2YCrCb, 'XYZ': cv2.COLOR_BGR2XYZ, 'LAB': cv2.COLOR_BGR2LAB}
+    img = cv2.cvtColor(img, colorspace[cspace])
+
+    segments_slic = slic(img, n_segments=300, start_label=1)
+    colorized = label2rgb(segments_slic, image=img, kind='avg')
+    
+    r, g, b = colorized[:,:,0], colorized[:,:,1], colorized[:,:,2]
+    r_hist, r_bin = np.histogram(r, binsize, density=True)
+    g_hist, g_bin = np.histogram(g, binsize, density=True)
+    b_hist, b_bin = np.histogram(b, binsize, density=True)
+    rgb_hist = np.concatenate((r_hist, g_hist, b_hist))
+
+    return rgb_hist
+
 imagedataset = pd.read_csv('Test_data.csv')
+imagedataset['Color_Histogram'] = imagedataset['Color_Histogram'].apply(lambda x: np.fromstring(x[1:-1], sep=' '))
 
 st.title('Logo Retrieval and Recognition System')
 upload_file = st.file_uploader('Please upload an Image file', type=["jpg", "jpeg", "png","jfif"])
@@ -61,36 +77,22 @@ if upload_file is not None:
     ###########################################  COLOR HISTOGRAM ###########################################
     
     if st.button("Search"):
-        def histogram(img, cspace='RGB', binsize=128):
-            colorspace =  {'RGB':cv2.COLOR_BGR2RGB, 'HSV': cv2.COLOR_BGR2HSV, 'YCRCB': cv2.COLOR_BGR2YCrCb, 'XYZ': cv2.COLOR_BGR2XYZ, 'LAB': cv2.COLOR_BGR2LAB}
-            img = cv2.cvtColor(img, colorspace[cspace])
-
-            segments_slic = slic(img, n_segments=300, start_label=1)
-            colorized = label2rgb(segments_slic, image=img, kind='avg')
-            
-            r, g, b = colorized[:,:,0], colorized[:,:,1], colorized[:,:,2]
-            r_hist, r_bin = np.histogram(r, binsize, density=True)
-            g_hist, g_bin = np.histogram(g, binsize, density=True)
-            b_hist, b_bin = np.histogram(b, binsize, density=True)
-            rgb_hist = np.concatenate((r_hist, g_hist, b_hist))
-        
-            return rgb_hist
-        
         query_Image = histogram(processimage)
 
         best_matches = []
 
         for index, row in imagedataset.iterrows():
             histogramrow = row['Color_Histogram']
+            histogramrow = histogramrow.flatten()
+            query_Image = query_Image.flatten()
             dist = distance.euclidean(histogramrow, query_Image)
             best_matches.append((row['filename'], dist))
 
         best_matches = sorted(best_matches, key=lambda x: x[1])
 
         st.text(best_matches[0][1])
-          
-        best_image = cv2.imread(imagedataset[imagedataset['filename'] == best_matches[0][0]]['filename'])
-        st.image(best_image, caption="Best Image", use_column_width=True)
+
+        st.image(Image.fromarray(np.squeeze(imagedataset[imagedataset['filename'] == best_matches[0][0]]['image'])), caption="Best Image", use_column_width=True)
 
 
 
