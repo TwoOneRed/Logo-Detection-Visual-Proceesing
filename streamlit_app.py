@@ -87,9 +87,9 @@ if upload_file is not None:
 
         best_matches = sorted(best_matches, key=lambda x: x[1])
 
-        st.text(best_matches[1])
+        st.text(best_matches[0][1])
           
-        best_image = cv2.imread(imagedataset[imagedataset['filename'] == best_matches[0]]['filename'])
+        best_image = cv2.imread(imagedataset[imagedataset['filename'] == best_matches[0][0]]['filename'])
         st.image(best_image, caption="Best Image", use_column_width=True)
 
 
