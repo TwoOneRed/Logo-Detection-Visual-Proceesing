@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 import math
 import collections
+import matplotlib as plt
 
 # streamlit run streamlit_app.py
 # path = C:\Users\tansi\Documents\SEM 1\VISUAL INFORMATION PROCESSING\github\VisualProcessing
