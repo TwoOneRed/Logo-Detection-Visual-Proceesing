@@ -12,16 +12,14 @@ import numpy as np
 import math
 import collections
 import matplotlib as plt
+import base64
 
 # streamlit run streamlit_app.py
 # path = C:\Users\tansi\Documents\SEM 1\VISUAL INFORMATION PROCESSING\github\VisualProcessing
 
 def histogram(img,  binsize=128):
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
     segments_slic = slic(img, n_segments=300, start_label=1)
     colorized = label2rgb(segments_slic, image=img, kind='avg')
-    
     r, g, b = colorized[:,:,0], colorized[:,:,1], colorized[:,:,2]
     r_hist, r_bin = np.histogram(r, binsize, density=True)
     g_hist, g_bin = np.histogram(g, binsize, density=True)
@@ -30,8 +28,27 @@ def histogram(img,  binsize=128):
 
     return rgb_hist
 
+def closest_pair(des1, des2, top_k=10):  
+    # Match SIFT descriptors
+    bf = cv2.BFMatcher()
+    matches = bf.match(des1, des2)
+    matches = sorted(matches, key=lambda x: x.distance)
+    
+    # Get the top k matches
+    top_k_matches = matches[:top_k]
+    
+    # Get the distances of the top k matches
+    top_k_distances = [match.distance for match in top_k_matches]
+    
+    # Sum up the distances of the top k pairs
+    score = sum(top_k_distances)
+    
+    # Return the score
+    return score
+
 imagedataset = pd.read_csv('Test_data.csv')
 imagedataset['Color_Histogram'] = imagedataset['Color_Histogram'].apply(lambda x: np.fromstring(x[1:-1], sep=' '))
+imagedataset['Sift_Features'] = imagedataset['Sift_Features'].apply(lambda x: np.fromstring(x['Sift_Features'], sep=' ') )
 
 st.title('Logo Retrieval and Recognition System')
 upload_file = st.file_uploader('Please upload an Image file', type=["jpg", "jpeg", "png","jfif"])
@@ -115,8 +132,6 @@ if upload_file is not None:
     if st.button("Invert Colors"):
         thres = cv2.bitwise_not(thres)
 
-    #cropped_image = np.array(cropped_image)
-
     # Perform bitwise_and operation between the original image and the thresholded image
     result = cv2.bitwise_and(cropped_image, cropped_image, mask=thres)
 
@@ -134,19 +149,39 @@ if upload_file is not None:
 
         for index, row in imagedataset.iterrows():
             histogramrow = row['Color_Histogram']
-            # histogramrow = histogramrow.flatten()
-            # query_Image = query_Image.flatten()
             dist = distance.euclidean(histogramrow, query_Image)
             best_matches.append((row['filename'], dist))
 
         best_matches = sorted(best_matches, key=lambda x: x[1])
 
-        import os
-        folder_path = os.getcwd() + '\datasets'
-        file_path = os.path.join(folder_path, best_matches[0][0])
+        colourFilter = [item[0] for item in best_matches]
+        colourFilter = colourFilter[:10]
+
+        colourDataset = imagedataset.loc[imagedataset['filename'].isin(colourFilter)]
+        
+
+        sift = cv2.xfeatures2d.SIFT_create()
+        # Detect keypoints and descriptors in the image
+        kp, des = sift.detectAndCompute(cropped_image, None)
+        best_matches = []
+
+        for index, row in colourDataset.iterrows():
+            data_des = row['Sift_Features']
+            print(data_des)
+            #score = closest_pair(des,data_des)
+            #best_matches.append((row['filename'], score))
+
+        best_matches = sorted(best_matches, key=lambda x: x[1])
+
+
+        im = colourDataset[colourDataset['filename'] == best_matches[0][0]]['image'].values[0]
+        # Decode the base64 string to a NumPy array
+        image_array = np.frombuffer(base64.b64decode(im), np.uint8)
+        # Convert the NumPy array back to an image
+        image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
 
         st.text(best_matches[0][1])
-        st.image(cv2.imread(file_path), caption='Similar Image', use_column_width=True)
+        st.image(image, caption='Similar Image', use_column_width=True)
 
     ########################################################################################################
 
