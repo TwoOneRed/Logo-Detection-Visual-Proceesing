@@ -74,30 +74,6 @@ if upload_file is not None:
     
     cropped_image = np.asarray(cropped_image, dtype=np.uint8)
 
-    ###########################################  COLOR HISTOGRAM ###########################################
-    
-    if st.button("Search"):
-        query_Image = histogram(cropped_image)
-        best_matches = []
-
-        for index, row in imagedataset.iterrows():
-            histogramrow = row['Color_Histogram']
-            # histogramrow = histogramrow.flatten()
-            # query_Image = query_Image.flatten()
-            dist = distance.euclidean(histogramrow, query_Image)
-            best_matches.append((row['filename'], dist))
-
-        best_matches = sorted(best_matches, key=lambda x: x[1])
-
-        import os
-        folder_path = os.getcwd() + '\datasets'
-        file_path = os.path.join(folder_path, best_matches[0][0])
-
-        st.text(best_matches[0][1])
-        st.image(cv2.imread(file_path), caption='Similar Image', use_column_width=True)
-
-    ########################################################################################################
-
     # Compute the mean and standard deviation of the image
     mean, std = cv2.meanStdDev(cropped_image)
 
@@ -139,7 +115,7 @@ if upload_file is not None:
     if st.button("Invert Colors"):
         thres = cv2.bitwise_not(thres)
 
-    cropped_image = np.array(cropped_image)
+    #cropped_image = np.array(cropped_image)
 
     # Perform bitwise_and operation between the original image and the thresholded image
     result = cv2.bitwise_and(cropped_image, cropped_image, mask=thres)
@@ -149,6 +125,30 @@ if upload_file is not None:
 
     edges = cv2.Canny(thres, 50, 150)
     st.image(edges, caption='Edged Image', use_column_width=True)
+
+    ###########################################  COLOR HISTOGRAM ###########################################
+    
+    if st.button("Search"):
+        query_Image = histogram(cropped_image)
+        best_matches = []
+
+        for index, row in imagedataset.iterrows():
+            histogramrow = row['Color_Histogram']
+            # histogramrow = histogramrow.flatten()
+            # query_Image = query_Image.flatten()
+            dist = distance.euclidean(histogramrow, query_Image)
+            best_matches.append((row['filename'], dist))
+
+        best_matches = sorted(best_matches, key=lambda x: x[1])
+
+        import os
+        folder_path = os.getcwd() + '\datasets'
+        file_path = os.path.join(folder_path, best_matches[0][0])
+
+        st.text(best_matches[0][1])
+        st.image(cv2.imread(file_path), caption='Similar Image', use_column_width=True)
+
+    ########################################################################################################
 
 #    if(st.button("CROP")):
 #        r = cv2.selectROI(edges)
