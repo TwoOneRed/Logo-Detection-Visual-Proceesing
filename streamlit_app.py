@@ -16,9 +16,8 @@ import matplotlib as plt
 # streamlit run streamlit_app.py
 # path = C:\Users\tansi\Documents\SEM 1\VISUAL INFORMATION PROCESSING\github\VisualProcessing
 
-def histogram(img, cspace='RGB', binsize=128):
-    colorspace =  {'RGB':cv2.COLOR_BGR2RGB, 'HSV': cv2.COLOR_BGR2HSV, 'YCRCB': cv2.COLOR_BGR2YCrCb, 'XYZ': cv2.COLOR_BGR2XYZ, 'LAB': cv2.COLOR_BGR2LAB}
-    img = cv2.cvtColor(img, colorspace[cspace])
+def histogram(img,  binsize=128):
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     segments_slic = slic(img, n_segments=300, start_label=1)
     colorized = label2rgb(segments_slic, image=img, kind='avg')
@@ -73,61 +72,40 @@ if upload_file is not None:
     if cropped_image:
         st.image(cropped_image, caption='Cropped Image', use_column_width=True)
     
-    processimage = np.asarray(cropped_image, dtype=np.uint8)
+    cropped_image = np.asarray(cropped_image, dtype=np.uint8)
 
     ###########################################  COLOR HISTOGRAM ###########################################
     
     if st.button("Search"):
-        query_Image = histogram(processimage)
-
+        query_Image = histogram(cropped_image)
         best_matches = []
 
         for index, row in imagedataset.iterrows():
             histogramrow = row['Color_Histogram']
-            histogramrow = histogramrow.flatten()
-            query_Image = query_Image.flatten()
+            # histogramrow = histogramrow.flatten()
+            # query_Image = query_Image.flatten()
             dist = distance.euclidean(histogramrow, query_Image)
             best_matches.append((row['filename'], dist))
 
         best_matches = sorted(best_matches, key=lambda x: x[1])
 
+        import os
+        folder_path = os.getcwd() + '\datasets'
+        file_path = os.path.join(folder_path, best_matches[0][0])
+
         st.text(best_matches[0][1])
-
-        curr = np.squeeze(imagedataset[imagedataset['filename'] == best_matches[0][0]]['image'])
-        st.text(curr)
-        st.image(Image.fromarray(curr), caption='Cropped Image', use_column_width=True)
-
-
-
-
-
-        ### TEMP ###
-        #import os
-        #folder_path = os.getcwd()
-        #image_files = [f for f in os.listdir(folder_path) if f.endswith('.png')]
-        ### TEMP ###
-        
-        #best_distance = float('inf')
-        #best_file = None
-        
-        #for file in image_files:
-        #    dataset_Image = histogram(cv2.imread(file))
-        #    dist = distance.euclidean(query_Image, dataset_Image)
-        #    if dist < best_distance:
-        #        best_distance = dist
-        #        best_file = file
-
+        st.image(cv2.imread(file_path), caption='Similar Image', use_column_width=True)
 
     ########################################################################################################
 
     # Compute the mean and standard deviation of the image
-    mean, std = cv2.meanStdDev(processimage)
+    mean, std = cv2.meanStdDev(cropped_image)
 
     # Create a copy of the image
-    normalized_image = processimage.copy()
+    normalized_image = cropped_image.copy()
 
     # Normalize the image
-    cv2.normalize(processimage, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
+    cv2.normalize(cropped_image, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
 
     # Show the image
     # st.image(normalized_image, caption="Normalized Image", use_column_width=True)
