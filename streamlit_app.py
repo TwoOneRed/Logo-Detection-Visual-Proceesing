@@ -59,7 +59,7 @@ if upload_file is not None:
     # Read the file to a dataframe using cv2
     st.image(upload_file, caption='Uploaded Image', use_column_width=True)                
 
-    # convert to opencv_image
+    #convert to opencv_image
     file_bytes = np.asarray(bytearray(upload_file.read()), dtype=np.uint8)
     opencv_image = cv2.imdecode(file_bytes, 1)
 
