@@ -101,20 +101,20 @@ if upload_file is not None:
     cv2.normalize(cropped_image, normalized_image, mean[0][0], std[0][0], cv2.NORM_MINMAX)
 
     # Show the image
-    # st.image(normalized_image, caption="Normalized Image", use_column_width=True)
+    st.image(normalized_image, caption="Normalized Image", use_column_width=True)
 
     # Blur the image
     blurred = cv2.GaussianBlur(normalized_image, (5, 5), 0)
 
     # Compute the difference image
     difference = normalized_image - blurred
-    strength = 1
+    strength = 2
 
     # Add the difference image to the original image
     sharpened = normalized_image + strength * difference
 
     # Show the image
-    # st.image(sharpened, caption="Sharpened Image", use_column_width=True)
+    st.image(sharpened, caption="Sharpened Image", use_column_width=True)
     
     # let the user select threshold value
     threshold_value = st.slider("Select Threshold Value", 0, 255, 120)
@@ -128,9 +128,6 @@ if upload_file is not None:
     # thresholding
     ret, thres = cv2.threshold(grayImage, threshold_value, 255, cv2.THRESH_BINARY)
     st.image(thres, caption='Processed Image', use_column_width=True)
-
-    if st.button("Invert Colors"):
-        thres = cv2.bitwise_not(thres)
 
     # Perform bitwise_and operation between the original image and the thresholded image
     result = cv2.bitwise_and(cropped_image, cropped_image, mask=thres)
