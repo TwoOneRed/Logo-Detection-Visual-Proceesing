@@ -48,7 +48,7 @@ def closest_pair(des1, des2, top_k=10):
 
 imagedataset = pd.read_csv('Test_data.csv')
 imagedataset['Color_Histogram'] = imagedataset['Color_Histogram'].apply(lambda x: np.fromstring(x[1:-1], sep=' '))
-imagedataset['Sift_Features'] = imagedataset['Sift_Features'].apply(lambda x: np.fromstring(x['Sift_Features'], sep=' ') )
+#imagedataset['Sift_Features'] = imagedataset['Sift_Features'].apply(lambda x: np.fromstring(x['Sift_Features'], sep=' ') )
 
 st.title('Logo Retrieval and Recognition System')
 upload_file = st.file_uploader('Please upload an Image file', type=["jpg", "jpeg", "png","jfif"])
